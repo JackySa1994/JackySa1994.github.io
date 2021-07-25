@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
 
 <style> .chart rect {fill: steelblue} </style>
 
@@ -17,19 +17,20 @@
     <rect></rect>
     <rect></rect>
 </svg>
+</body>
 
 <script>
     var data = [4,8,15,16,23,42];
-    document.getElementByID("data").innerHTML = data;
-    d3.selectALL("rect")
+    document.getElementById("data").innerHTML = data;
+    d3.selectAll("rect")
             .data(data)
         .attr("width",19)
-        .attr("height", function(d) {return 10*d;})
+        .attr("height",function(d) {return 10*d; })
         .attr("x",function(d,i) {return 20*i; })
-        .attr("y", function(d) {return 420 - 10*d; });
+        .attr("y",function(d) {return 420 - 10*d; });
 </script>
 
-</body>
+
 </html>
 
 
