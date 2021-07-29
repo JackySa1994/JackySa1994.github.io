@@ -1,35 +1,84 @@
 <!DOCTYPE html>
 
-<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
 
-<style> .chart rect {fill: steelblue} </style>
+<style> .chart rect {fill: steelblue} 
+#tooltip {
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    width:100px; height:50px;
+    background: white;
+    border:0px;
+}
+</style>
 
 <html>
 <h1>Hello World</h1>
-<body>
-<p>I'm hosted with GitHub Pages.</p>
 
-<svg class="chart" width="120" height="500">
-    <rect></rect>
-    <rect></rect>
-    <rect></rect>
-    <rect></rect>
-    <rect></rect>
-    <rect></rect>
+<body onload="init()">
+<p> I'm hosted with GitHub Pages.</p>
+<svg class="chart" width="1500" height="500">
 </svg>
-</body>
+
+<div id="tooltip" opacity =0></div>
 
 <script>
-var data = [4,8,15,16,23,42];
-document.getElementById("data").innerHTML = data;
-d3.selectAll("rect")
-    .data(data)
-    .attr("width",19)
-    .attr("height",function(d) {return 10*d; })
-    .attr("x",function(d,i) {return 20*i; })
-    .attr("y",function(d) {return 420 - 10*d; });
-</script>
 
+async function init() 
+    {const data = await d3.csv('https://github.com/JackySa1994/JackySa1994.github.io/blob/main/pokemon-2.csv');
+    }
+
+
+var width = 500;
+var height = 200;
+var margin = 30;
+
+
+var data = [100,40,00,100,150,75];
+
+var y = d3.scaleLinear()
+    .domain([d3.min(data),d3.max(data)])
+    .range([height,0]);
+
+var x = d3.scaleLinear()
+    .domain([1,2,3])
+    .range([0,width]);
+
+var tooltip = d3.select("#tooltip");
+
+d3.select("svg")
+    .attr("width",width+2*margin)
+    .attr("height",height+2*margin)
+
+d3.select("svg")
+    .append("g")
+    .attr("transform","translate("+margin+","+margin+")")
+    .call(d3.axisLeft(y));
+
+d3.select("svg")
+    .append("g")
+    .attr("transform","translate("+margin+","+(height+margin)+")")
+    .call(d3.axisBottom(x));
+
+d3.select("svg")
+    .selectAll("rect")
+    .data(data)
+    .enter().append("rect")
+    .attr("width",20)
+    .attr("height",function(data) {return height - y(data); })
+    .attr("x",function(data,i) {return 30*i+margin;})
+    .attr("y",function(data) {return y(data)+margin; })
+    .on("mouseover", function(data,i) {
+        tooltip.style("opacity",1)
+               .style("left",(d3.event.pageX)+"px")
+               .style("top",(d3.event.pageY)+"px")
+               .html("item is" + data);})
+    .on("mouseout",function(){tooltip.style("opacity",0)})
+
+
+</script>
+</body>
 
 </html>
 
