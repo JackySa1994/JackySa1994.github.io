@@ -14,10 +14,13 @@
 </style>
 
 <html>
-<h1>Hello World</h1>
+<h1>Pokemon</h1>
 
-<body onload = "init()">
-<p> I'm hosted with GitHub Pages.</p>
+<body onload = "load_data()">
+<p> Analysis of the number of Pokemon Across Generations, Types and Attack Powers!</p>
+
+<p> This chart currently shows Pokemon across all generations. Click on a bar to explore that generation further, by Types and Attack Powers</p>
+
 <svg class="chart" width="1500" height="500">
 </svg>
 
@@ -25,56 +28,78 @@
 
 <script>
 
-async function init() {
-    const dataf = await d3.csv('https://github.com/JackySa1994/JackySa1994.github.io/blob/main/pokemon-2.csv');}
+async function load_data() {
+    const dataf = await d3.csv('https://raw.githubusercontent.com/JackySa1994/JackySa1994.github.io/main/pokemon-2.csv')
+    chart_generations(dataf)
+    ;}
+
+function chart_generations(dataf) {
+    var data_g = [1,2,3,4,5,6,7] ;
+    var data_g_c = [0,0,0,0,0,0,0] ;
 
 
-var width = 500;
-var height = 200;
-var margin = 30;
+    for (let i = 0; i < 801; i++)
+        {gen = dataf[i].generation - 1
+         data_g_c[gen] = data_g_c[gen] + 1
+        }
+
+    var width = 400;
+    var height = 400;
+    var margin = 40;
 
 
-var data = [100,40,00,100,150,75];
+    var y = d3.scaleLinear()
+        .domain([50,170])
+        .range([height,0]);
 
-var y = d3.scaleLinear()
-    .domain([d3.min(data),d3.max(data)])
-    .range([height,0]);
+    var x = d3.scaleLinear()
+        .domain([0.5,7.5])
+        .range([0, width]);
 
-var x = d3.scaleLinear()
-    .domain([1,2,3])
-    .range([0,width]);
+    var tooltip = d3.select("#tooltip");
 
-var tooltip = d3.select("#tooltip");
+    d3.select("svg")
+        .append("g")
+        .attr("transform","translate("+margin+","+margin+")")
+        .call(d3.axisLeft(y))
+        .append("text")
 
-d3.select("svg")
-    .attr("width",width+2*margin)
-    .attr("height",height+2*margin)
+    d3.select("svg")
+        .append("g")
+        .attr("transform","translate("+margin+","+(height+margin)+")")
+        .call(d3.axisBottom(x).ticks(7));
 
-d3.select("svg")
-    .append("g")
-    .attr("transform","translate("+margin+","+margin+")")
-    .call(d3.axisLeft(y));
+    d3.select("svg")
+        .append("text")
+        .attr("x", margin + (width / 2))             
+        .attr("y", margin)
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("Number of Pokemon Across Different Generations");
 
-d3.select("svg")
-    .append("g")
-    .attr("transform","translate("+margin+","+(height+margin)+")")
-    .call(d3.axisBottom(x));
+    d3.select("svg")
+        .selectAll("rect")
+        .data(data_g_c)
+        .enter().append("rect")
+        .attr("width",30)
+        .attr("height",function(data_g_c) {return height - y(data_g_c); })
+        .attr("x",function(data_g,i) {return 2 * margin + x(i);})
+        .attr("y",function(data_g_c) {return margin + y(data_g_c); })
+        .on("mouseover", function(data_g_c,i) {
+            tooltip.style("opacity",1)
+                .style("left",(d3.event.pageX)+"px")
+                .style("top",(d3.event.pageY)+"px")
+                .html("There are " + data_g_c + " " + "generation " + (i + 1) + " Pokemon");})
+        .on("mouseout",function(){tooltip.style("opacity",0)})
+        .on("click",chart_types(i+1));
 
-d3.select("svg")
-    .selectAll("rect")
-    .data(data)
-    .enter().append("rect")
-    .attr("width",20)
-    .attr("height",function(data) {return height - y(data); })
-    .attr("x",function(data,i) {return 30*i+margin;})
-    .attr("y",function(data) {return y(data)+margin; })
-    .on("mouseover", function(data,i) {
-        tooltip.style("opacity",1)
-               .style("left",(d3.event.pageX)+"px")
-               .style("top",(d3.event.pageY)+"px")
-               .html("item is" + data);})
-    .on("mouseout",function(){tooltip.style("opacity",0)})
+}
 
+function chart_types(gen) {
+    d3.select("svg").html = "" 
+
+}
 
 </script>
 </body>
