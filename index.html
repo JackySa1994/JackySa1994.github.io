@@ -25,6 +25,12 @@
 
 <p style= "font-size:10px;"></p> Click on <b>Reset Chart</b> to go back to All Pokemons</p>
 
+<style>
+    rect{
+        cursor: pointer;
+    }
+</style>
+
 <button type="button" onclick = "reset()">Reset Chart</button>
 
 <svg class="chart" width="1500" height="500">
@@ -56,7 +62,11 @@ function chart_generations(data_f) {
     var width = 800;
     var height = 400;
     var margin = 75;
-
+    
+    var rect_style_over = {
+  	"stroke": "#FF9696",
+  	"fill": "#E2E2E2",
+  	"cursor": "pointer"}
 
     var y = d3.scaleLinear()
         .domain([50,170])
@@ -101,8 +111,8 @@ function chart_generations(data_f) {
             tooltip.style("opacity",1)
                 .style("left",(d3.event.pageX)+"px")
                 .style("top",(d3.event.pageY)+"px")
-                .html("There are " + data_g_c + " " + "generation " + (i + 1) + " Pokemon." + " " + "Click to Explore Further");})
-                
+                .html("There are " + data_g_c + " " + "generation " + (i + 1) + " Pokemon." + " " + "Click to Explore Further")
+            ;})
         .on("mouseout",function(){tooltip.style("opacity",0)})
         .on("click", chart_type);  
     }
@@ -117,6 +127,7 @@ function chart_type(data_g_c, i){
     d3.select("svg")
         .remove()
 
+        
     d3.select("body")
         .append("svg")
         .attr("width", 1500)
